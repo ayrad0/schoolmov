@@ -1,0 +1,56 @@
+// ==UserScript==
+// @name         SchoolMouv Paywall Bypass
+// @namespace    http://tampermonkey.net/
+// @version      1.0
+// @description  Removes paywall modal and unhides content on SchoolMouv.fr
+// @author       You
+// @match        https://www.schoolmouv.fr/*
+// @grant        none
+// @run-at       document-start
+// ==/UserScript==
+
+(function() {
+    'use strict';
+
+    // Create a MutationObserver to watch for paywall elements
+    const observer = new MutationObserver((mutations, obs) => {
+        // Target the paywall modal
+        const paywallModals = document.querySelectorAll('.paywall.paywall-modal_paywall__container__Dl2wt.paywall-modal_paywall__container-blur__7j4dY');
+        paywallModals.forEach(modal => {
+            modal.remove(); // Remove the paywall modal
+        });
+
+        // Target the hidden content
+        const hiddenContents = document.querySelectorAll('.resource-content_resource__content__paywall-hidden__Pc_Is');
+        hiddenContents.forEach(content => {
+            content.classList.remove('resource-content_resource__content__paywall-hidden__Pc_Is');
+            content.style.display = 'block';
+            content.style.visibility = 'visible';
+        });
+
+        // Stop observing if at least one element was found
+        if (paywallModals.length > 0 || hiddenContents.length > 0) {
+            obs.disconnect();
+        }
+    });
+
+    // Start observing the document for added nodes
+    observer.observe(document, {
+        childList: true,
+        subtree: true
+    });
+
+    // Check for existing paywall elements
+    const existingModals = document.querySelectorAll('.paywall.paywall-modal_paywall__container__Dl2wt.paywall-modal_paywall__container-blur__7j4dY');
+    existingModals.forEach(modal => {
+        modal.remove();
+    });
+
+    // Check for existing hidden content
+    const existingContents = document.querySelectorAll('.resource-content_resource__content__paywall-hidden__Pc_Is');
+    existingContents.forEach(content => {
+        content.classList.remove('resource-content_resource__content__paywall-hidden__Pc_Is');
+        content.style.display = 'block';
+        content.style.visibility = 'visible';
+    });
+})();
